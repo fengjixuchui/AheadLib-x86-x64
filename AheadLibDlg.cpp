@@ -9,12 +9,11 @@
 
 #include "AheadSource.h"
 
-#define AHEADLIB_VERSION _T("AheadLib x86/x64  Ver:1.1")
+#define AHEADLIB_VERSION _T("AheadLib x86/x64  Ver:1.2")
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 
 // 用于应用程序“关于”菜单项的 CAboutDlg 对话框
 
@@ -50,7 +49,6 @@ END_MESSAGE_MAP()
 
 
 // CAheadLibDlg 对话框
-
 
 
 CAheadLibDlg::CAheadLibDlg(CWnd* pParent /*=nullptr*/)
@@ -340,7 +338,7 @@ void CAheadLibDlg::OnBnClickedButtonMakefile()
 
 
 	if (m_isx64) {
-		source += _T("EXTERN_C_START\r\n");
+		source += _T("extern \"C\" \n{\r\n");
 	}
 
 	for (auto exFunc : m_exportFunc)
@@ -369,7 +367,7 @@ void CAheadLibDlg::OnBnClickedButtonMakefile()
 	}
 
 	if (m_isx64) {
-		source += _T("EXTERN_C_END\r\n");
+		source += _T("}\r\n");
 	}
 
 	source += _T("\r\n");
@@ -469,7 +467,7 @@ void CAheadLibDlg::OnBnClickedButtonMakefile()
 			source_asm += str;
 		}
 
-		source_asm += _T("\r\n");
+		source_asm += _T("\r\n.CODE\r\n");
 
 		for (auto exFunc : m_exportFunc)
 		{
@@ -550,7 +548,7 @@ void CAheadLibDlg::OnBnClickedButtonMakefile()
 
 	if (fileOut.Open(outputPath, CFile::modeCreate | CFile::modeWrite))
 	{
-		ansiSource = CW2A(source.GetString());
+		ansiSource = CW2CW(source.GetString());
 		fileOut.Write(ansiSource.GetString(), ansiSource.GetLength());
 		fileOut.Close();
 
@@ -569,7 +567,7 @@ void CAheadLibDlg::OnBnClickedButtonMakefile()
 
 		if (fileOutAsm.Open(outputPathAsm, CFile::modeCreate | CFile::modeWrite))
 		{
-			ansiSourceAsm = CW2A(source_asm.GetString());
+			ansiSourceAsm = CW2CW(source_asm.GetString());
 			fileOutAsm.Write(ansiSourceAsm.GetString(), ansiSourceAsm.GetLength());
 			fileOutAsm.Close();
 		}
